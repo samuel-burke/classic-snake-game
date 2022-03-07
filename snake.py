@@ -4,12 +4,14 @@
 #
 #########################
 import math
-
+import pygame
 from board import *
 
 '''Default Snake Settings'''
-SNAKE_COLOR = 'green'
-STARTING_LENGTH = 10
+SNAKE_COLOR = 'white'
+STARTING_LENGTH = 3
+pygame.mixer.init()
+
 
 
 class Snake:
@@ -18,9 +20,6 @@ class Snake:
         for i in range(length):
             self.body.append(new_segment(-STEP * i, 0))
         self.head = self.body[0]
-
-        self.head.shape('circle')
-        self.head.shapesize(1.5, 3)
 
     def move(self):
         """Moves the entire snake forward with the current head heading and raises a CrashedIntoTail exception if the
@@ -83,7 +82,7 @@ class Snake:
             segment.color('gray')
             segment.shapesize(0.1)
 
-    def grow(self, n=5):
+    def grow(self, n=1):
         """Adds n segments to the snakes body"""
 
         # check if there are any more segments to add

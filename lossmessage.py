@@ -11,5 +11,5 @@ class LossMessage(Writer):
         super().__init__()
         self.font_pt = 30
 
-    def display(self):
-        super().update_text('Press Space to play again!')
+    def display(self, text):
+        super().update_text(text)
