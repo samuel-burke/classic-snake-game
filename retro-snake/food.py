@@ -10,14 +10,15 @@ import board as b
 
 FOOD_COLOR = 'white'
 FOOD_SHAPE = 'square'
-FOOD_SIZE = 0.5
-BUFFER = 50
+FOOD_SIZE = b.BLOCK_SIZE / 40
+BUFFER = 1
 
 
 def get_food_coord():
-    amt = (b.WIDTH - 2 * BUFFER) // 2
-    x = random.randint(-amt, amt) // 20 * 20
-    y = random.randint(-amt, amt) // 20 * 20
+    max_blocks_x = b.BLOCKS_TO_RIGHT_WALL - BUFFER
+    max_blocks_y = b.BLOCKS_TO_TOP_WALL - BUFFER
+    x = random.randint(-max_blocks_x, max_blocks_x) * b.BLOCK_SIZE
+    y = random.randint(-max_blocks_y, max_blocks_y) * b.BLOCK_SIZE
     return x, y
 
 
@@ -26,7 +27,6 @@ class Food(Turtle):
     def __init__(self):
         super().__init__()
         self.shape(FOOD_SHAPE)
-        self.setheading(random.choice(b.HEADINGS))
         self.penup()
         self.shapesize(FOOD_SIZE)
         self.color(FOOD_COLOR)
@@ -35,4 +35,3 @@ class Food(Turtle):
     def move(self):
         x, y = get_food_coord()
         self.goto(x, y)
-        self.setheading(random.choice(b.HEADINGS))

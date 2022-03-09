@@ -9,7 +9,7 @@ from board import *
 '''Default Snake Settings'''
 SNAKE_COLOR = 'white'
 STARTING_LENGTH = 3
-
+STANDARD_SIZE = BLOCK_SIZE/20
 
 class Snake:
     def __init__(self, screen, length=STARTING_LENGTH):
@@ -54,47 +54,35 @@ class Snake:
     def up(self):
         """Points the snake's head up when the UP arrow key is pressed"""
         if self.head.heading() != DOWN:
+            self.disable_key_input()
             self.head.setheading(UP)
-            self.screen.onkey(None, 'Up')
-            self.screen.onkey(None, 'Down')
-            self.screen.onkey(None, 'Left')
-            self.screen.onkey(None, 'Right')
 
     def down(self):
         """Points the snake's head down when the DOWN arrow key is pressed"""
         if self.head.heading() != UP:
+            self.disable_key_input()
             self.head.setheading(DOWN)
-            self.screen.onkey(None, 'Up')
-            self.screen.onkey(None, 'Down')
-            self.screen.onkey(None, 'Left')
-            self.screen.onkey(None, 'Right')
 
     def left(self):
         """Points the snake's head left when the LEFT arrow key is pressed"""
         if self.head.heading() != RIGHT:
+            self.disable_key_input()
             self.head.setheading(LEFT)
-            self.screen.onkey(None, 'Up')
-            self.screen.onkey(None, 'Down')
-            self.screen.onkey(None, 'Left')
-            self.screen.onkey(None, 'Right')
 
     def right(self):
         """Points the snake's head right when the RIGHT arrow key is pressed"""
         if self.head.heading() != LEFT:
+            self.disable_key_input()
             self.head.setheading(RIGHT)
-            self.screen.onkey(None, 'Up')
-            self.screen.onkey(None, 'Down')
-            self.screen.onkey(None, 'Left')
-            self.screen.onkey(None, 'Right')
 
     def kill(self):
         """Kills the snake by recoloring the snake when it hits its tail or a wall"""
         # paints the snake the dead color
         self.head.color('gray')
-        self.head.shapesize(0.4)
+        self.head.shapesize(0.4 * STANDARD_SIZE)
         for segment in self.body[1:]:
             segment.color('gray')
-            segment.shapesize(0.1)
+            segment.shapesize(0.1 * STANDARD_SIZE)
 
     def grow(self, n=1):
         """Adds n segments to the snakes body"""
@@ -112,6 +100,12 @@ class Snake:
             self.body.append(new_segment(tail_x, tail_y))
             self.grow(n - 1)  # recursively call grow() until there are no more segments to add
 
+    def disable_key_input(self):
+        self.screen.onkey(None, 'Up')
+        self.screen.onkey(None, 'Down')
+        self.screen.onkey(None, 'Left')
+        self.screen.onkey(None, 'Right')
+
 
 def new_segment(x, y):
     """Generates a new segment for the snake body"""
@@ -119,7 +113,7 @@ def new_segment(x, y):
     segment.speed('fastest')
     segment.penup()
     segment.color(SNAKE_COLOR)
-    segment.turtlesize(1)
+    segment.turtlesize(STANDARD_SIZE)
     segment.goto(x, y)
     return segment
 
