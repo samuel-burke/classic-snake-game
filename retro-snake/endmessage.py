@@ -6,7 +6,7 @@
 from writer import Writer
 
 
-class LossMessage(Writer):
+class EndMessage(Writer):
     def __init__(self):
         super().__init__()
         self.font_pt = 30

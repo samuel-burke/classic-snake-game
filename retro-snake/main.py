@@ -10,7 +10,7 @@ import pygame
 
 from board import *
 from food import Food
-from lossmessage import LossMessage
+from endmessage import EndMessage
 from scoreboard import ScoreBoard
 from snake import Snake, CrashedIntoTail
 
@@ -55,6 +55,21 @@ def toggle_background_music():
 
 
 def main():
+    def reset_score():
+        def yes():
+            score_display.reset_high_score()
+            end_message.display("High score reset")
+            score_display.update_score()
+            screen.update()
+
+        def no():
+            end_message.display("Press Space to play again!")
+            screen.update()
+
+        end_message.display("Reset high score? y/n")
+        screen.update()
+        screen.onkey(yes, 'y')
+        screen.onkey(no, 'n')
 
     pygame.mixer.init()
     eat = pygame.mixer.Sound("resources/audio/eat.wav")
@@ -71,12 +86,14 @@ def main():
     snake = Snake(screen)
     food = Food()
     score_display = ScoreBoard()
+    end_message = EndMessage()
     screen.listen()
     screen.onkey(toggle_background_music, "m")
 
     first_iteration = True
     while True:
         screen.onkey(None, 'space')
+        screen.onkey(None, "r")
 
         if first_iteration:
             screen.update()
@@ -84,10 +101,14 @@ def main():
             pygame.mixer.Sound.play(pygame.mixer.Sound("resources/audio/game-start.wav"))
             first_iteration = False
 
-        screen.onkey(snake.up, 'Up')
-        screen.onkey(snake.down, 'Down')
-        screen.onkey(snake.left, 'Left')
-        screen.onkey(snake.right, 'Right')
+        screen.onkey(snake.up, "Up")
+        screen.onkey(snake.down, "Down")
+        screen.onkey(snake.left, "Left")
+        screen.onkey(snake.right, "Right")
+        screen.onkey(snake.up, "w")
+        screen.onkey(snake.down, "s")
+        screen.onkey(snake.left, "a")
+        screen.onkey(snake.right, "d")
 
         if crashed_into_wall(snake):
             pygame.mixer.Sound.play(hit)
@@ -117,15 +138,17 @@ def main():
         pygame.mixer.music.load("resources/audio/new-record.mp3")
         if music:
             pygame.mixer.music.play()
-        LossMessage().display(f"Score: {score_display.points} New Record!")
+        end_message.display(f"Score: {score_display.points} New Record!")
     else: 
         pygame.mixer.music.load("resources/audio/game-over.mp3")
         if music:
             pygame.mixer.music.play()
-        LossMessage().display("Press Space to play again!")
+        end_message.display("Press Space to play again!")
+
     screen.update()
-    screen.onkey(main, 'space')
     score_display.update_high_score()
+    screen.onkey(main, "space")
+    screen.onkey(reset_score, "r")
     screen.exitonclick()
 
 

@@ -35,5 +35,11 @@ class ScoreBoard(Writer):
         with open('resources/high_score.txt', 'w') as f:
             f.write(str(self.high_score))
 
+    def reset_high_score(self):
+        self.points = 0
+        self.high_score = 0
+        with open('resources/high_score.txt', 'w') as f:
+            f.write("0")
+
     def add_to_score(self, amt):
         self.points += amt
