@@ -1,31 +1,46 @@
-#########################
-# Author: Samuel Burke
-# Created 03.05.2022
-#
-#########################
+"""
+Manages the Snake's head and segments
+
+Author: Samuel Burke
+Created: 03.05.2022
+"""
 import math
+
 from board import *
 
-'''Default Snake Settings'''
-SNAKE_COLOR = 'white'
-STARTING_LENGTH = 3
-STANDARD_SIZE = BLOCK_SIZE/20
+"""Default Snake Settings"""
+SNAKE_COLOR = 'white'  # body color of snake
+STARTING_LENGTH = 3  # number of segments for a new snake
+STANDARD_SIZE = BLOCK_SIZE / 20  # Snake's scale to the grid - (do not change)
+
 
 class Snake:
-    def __init__(self, screen, length=STARTING_LENGTH):
-        self.screen = screen
+    """
+    Snake object that controls the snake's movement of head and trailing segments.
+    """
+
+    def __init__(self, disable_key_input, length=STARTING_LENGTH):
+        """
+        Creates a Snake and body of chosen length
+        :param disable_key_input: function that disables changing the snake heading after user input
+        :param length: the starting length of the snake
+        """
+
+        self.disable_key_input = disable_key_input
         self.body = []
         for i in range(length):
             self.body.append(new_segment(-STEP * i, 0))
         self.head = self.body[0]
 
     def move(self):
-        """Moves the entire snake forward with the current head heading and raises a CrashedIntoTail exception if the
-        head collides with any segment of the body"""
+        """
+        Moves the entire snake forward with the current head heading and raises a CrashedIntoTail exception if the
+        head collides with any segment of the body
+        """
         heading = self.head.heading()
         head_x, head_y = self.head.position()
 
-        # find snake head's future x,y after movement
+        # find snake head's future position after movement
         if heading == RIGHT:
             head_x += STEP
         elif heading == UP:
@@ -39,7 +54,7 @@ class Snake:
         for segment in self.body:
             distance = math.dist((head_x, head_y), segment.position())
 
-            if distance < 10:  # kill if the snake's head is less than 10 from a body segment
+            if distance < BLOCK_SIZE / 2:  # kill if the snake's head is hitting a body segment
                 self.kill()
                 raise CrashedIntoTail()
 
@@ -99,12 +114,6 @@ class Snake:
             # add the segment to the end of the tail
             self.body.append(new_segment(tail_x, tail_y))
             self.grow(n - 1)  # recursively call grow() until there are no more segments to add
-
-    def disable_key_input(self):
-        self.screen.onkey(None, 'Up')
-        self.screen.onkey(None, 'Down')
-        self.screen.onkey(None, 'Left')
-        self.screen.onkey(None, 'Right')
 
 
 def new_segment(x, y):
